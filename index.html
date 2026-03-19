@@ -38,13 +38,17 @@
         }
 
         .title {
-            font-size: 4em;
+            font-size: 3.5em;
             color: #fff;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
                          0 0 40px rgba(255, 107, 157, 0.6);
-            animation: pulse 2s ease-in-out infinite, float 3s ease-in-out infinite;
+            animation: titleAnim 3s ease-in-out infinite;
             margin-bottom: 30px;
             font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
 
         @keyframes pulse {
@@ -179,9 +183,58 @@
             50% { opacity: 1; transform: scale(1); }
         }
 
+        @keyframes titleAnim {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.04) translateY(-15px); }
+        }
+
+        .title-deco {
+            font-size: 0.55em;
+            letter-spacing: 10px;
+            animation: heartsPulse 1.5s ease-in-out infinite;
+        }
+
+        .title-name {
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.9),
+                         0 0 50px rgba(255, 107, 157, 0.8),
+                         0 0 10px #fff;
+        }
+
+        @keyframes heartsPulse {
+            0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.85; }
+            50% { transform: scale(1.2) rotate(2deg); opacity: 1; }
+        }
+
+        @keyframes heartGrow {
+            0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            40%  { transform: translate(-50%, -50%) scale(2.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
+        }
+
+        @keyframes heartExplode {
+            0%   { transform: translate(-50%, -50%) scale(2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
+        }
+
+        @keyframes particleExplode {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            70% {
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
+                opacity: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             .title {
-                font-size: 2.5em;
+                font-size: 2em;
             }
             .animals {
                 font-size: 5em;
@@ -195,7 +248,12 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="title">🎉 ¡Feliz Cumpleaños Mary! 🎉</h1>
+        <h1 class="title">
+            <span class="title-deco"> 🎉💜 💖 💜 💖 💜 🎉</span>
+            <span>Feliz Cumpleaños</span>
+            <span class="title-name">Mary</span>
+            <span class="title-deco">🎉💜 💖 💜 💖 💜 🎉</span>
+        </h1>
         
         <div class="animals">
             <span class="animal wolf">🐺</span>
@@ -203,8 +261,8 @@
         </div>
         
         <div class="message">
-            Para la <span class="hacker-text">hacker</span> y chica<br>
-            más increíble del mundo 💜✨
+            Para la <span class="hacker-text">hacker</span><br>
+            más hermosa, lista e increíble del mundo 💜✨
         </div>
     </div>
 
@@ -219,15 +277,33 @@
             
             setTimeout(() => confetti.remove(), 5000);
         }
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '💖';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+        function createBurstHeart() {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            const hearts = ['💜', '💖', '💗', '💓', '💝', '❤️', '💞', '🩷'];
+            const emoji = hearts[Math.floor(Math.random() * hearts.length)];
+
+            const heart = document.createElement('span');
+            heart.textContent = emoji;
+            heart.style.cssText = `position:fixed;left:${x}px;top:${y}px;font-size:20px;z-index:15;pointer-events:none;animation:heartGrow 0.7s ease-out forwards;display:block;`;
             document.body.appendChild(heart);
-            
-            setTimeout(() => heart.remove(), 4000);
+
+            setTimeout(() => {
+                heart.style.animation = 'heartExplode 0.35s ease-in forwards';
+                const numP = 8;
+                for (let i = 0; i < numP; i++) {
+                    const angle = (i / numP) * Math.PI * 2 + Math.random() * 0.4;
+                    const dist = 50 + Math.random() * 50;
+                    const dx = Math.cos(angle) * dist;
+                    const dy = Math.sin(angle) * dist;
+                    const p = document.createElement('span');
+                    p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    p.style.cssText = `position:fixed;left:${x}px;top:${y}px;font-size:12px;z-index:15;pointer-events:none;--dx:${dx}px;--dy:${dy}px;animation:particleExplode 0.55s ease-out forwards;display:block;`;
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 600);
+                }
+                setTimeout(() => heart.remove(), 400);
+            }, 700);
         }
         function createSparkle() {
             const sparkle = document.createElement('div');
@@ -239,15 +315,22 @@
             setTimeout(() => sparkle.remove(), 2000);
         }
         setInterval(createConfetti, 200);
-        setInterval(createHeart, 800);
+        setInterval(createBurstHeart, 700);
         setInterval(createSparkle, 400);
 
         document.querySelectorAll('.animal').forEach(animal => {
             animal.addEventListener('click', function() {
                 for(let i = 0; i < 20; i++) {
                     createConfetti();
+                    createBurstHeart();
                 }
             });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.animal')) {
+                for (let i = 0; i < 3; i++) createBurstHeart();
+            }
         });
     </script>
 </body>
