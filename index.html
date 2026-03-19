@@ -127,7 +127,6 @@
             50% { text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41; }
         }
 
-        /* Confetti */
         .confetti {
             position: absolute;
             width: 10px;
@@ -196,7 +195,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="title">🎉 ¡Felicidades Mary! 🎉</h1>
+        <h1 class="title">🎉 ¡Feliz Cumpleaños Mary! 🎉</h1>
         
         <div class="animals">
             <span class="animal wolf">🐺</span>
@@ -210,7 +209,6 @@
     </div>
 
     <script>
-        // Crear confetti
         function createConfetti() {
             const confetti = document.createElement('div');
             confetti.classList.add('confetti');
@@ -221,8 +219,6 @@
             
             setTimeout(() => confetti.remove(), 5000);
         }
-
-        // Crear corazones flotantes
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
@@ -233,8 +229,6 @@
             
             setTimeout(() => heart.remove(), 4000);
         }
-
-        // Crear destellos
         function createSparkle() {
             const sparkle = document.createElement('div');
             sparkle.classList.add('sparkle');
@@ -244,13 +238,10 @@
             
             setTimeout(() => sparkle.remove(), 2000);
         }
-
-        // Generar animaciones continuamente
         setInterval(createConfetti, 200);
         setInterval(createHeart, 800);
         setInterval(createSparkle, 400);
 
-        // Efecto de click en el lobo y oveja
         document.querySelectorAll('.animal').forEach(animal => {
             animal.addEventListener('click', function() {
                 for(let i = 0; i < 20; i++) {
